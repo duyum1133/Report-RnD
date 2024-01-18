@@ -1,0 +1,695 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title> RabbitMQ Basic</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="3c003503-d1a5-473d-8d5d-10f2dc22d08b" class="page sans"><header><h1 class="page-title"> RabbitMQ Basic</h1><p class="page-description"></p></header><div class="page-body"><p id="e3542e5d-24ce-4c68-8f33-a50d242b0486" class="">
+</p><h1 id="4d16a067-aa2a-4a83-8887-b2a61a92ea3e" class=""><mark class="highlight-red">I. What is RabbitMQ? How does RabbitMQ work</mark></h1><blockquote id="336f638c-795f-41fe-8719-431c0977ff05" class=""><mark class="highlight-default"><strong>Event Queue </strong></mark><mark class="highlight-default">is an important design pattern that helps analyze a monolithic application. It postpones sending events to a point in the execution flow where they can be safely processed.</mark></blockquote><h2 id="cf33b12d-e236-49f3-8e9f-4a6e96fdd737" class=""><mark class="highlight-blue">1. What is RabbitMQ? </mark></h2><p id="78da28c5-ee5b-4118-81fb-5a75f4dde97e" class="">RabbitMQ is an open source message broker written in Erlang.</p><p id="9221c166-9a96-45f4-b631-8371e19b5176" class="">RabbitMQ was originally developed in collaboration between LShift, LTD and Cohesive FT, now owned by Pivotal Software Inc and released in 2007 under the Mozilla Public License.</p><p id="476fa5d5-d9ed-4bab-a437-d65b0c863f24" class="">RabbitMQ supports the publish/subscribe model, looping model and request/response model. It provides features such as automatic recovery, routing and message filtering. RabbitMQ supports many programming languages such as PHP, Java, .NET, Ruby, Python, etc.</p><p id="7c95b5ff-bc1c-45e8-af63-b2459b702c68" class="">RabbitMQ was one of the first message brokers to implement the AMQP (<strong>A</strong>dvanced <strong>M</strong>essage <strong>Q</strong>ueuing <strong>P</strong>rotocol) protocol.</p><p id="c62a4fbe-d16a-4578-b841-83d9594b17c5" class="">AMQP is an open (open protocol) standardized communication protocol for reliably and efficiently transmitting messages between applications and message brokers. AMQP provides important features such as bandwidth limits, load limits, and automatic message forwarding to another system if the original system cannot handle it.</p><h2 id="d0b54a7d-a416-4974-baae-e3135db861f8" class=""><mark class="highlight-blue">2. How does RabbitMQ work?</mark></h2><p id="e6371963-ea5d-4854-b6e8-30cf55717253" class="">The message processing flow in RabbitMQ works as follows:</p><figure id="e7b098bc-33d2-4b85-8473-8bdef9c83826" class="image" style="text-align:center"><a href="RabbitMQ%20Basic%203c003503d1a5473d8d5d10f2dc22d08b/Untitled.png"><img style="width:528px" src="RabbitMQ%20Basic%203c003503d1a5473d8d5d10f2dc22d08b/Untitled.png"/></a><figcaption>The message processing flow in RabbitMQ</figcaption></figure><ol type="1" id="6f83f26c-b01c-4592-8ff0-1cacc1f236d0" class="numbered-list" start="1"><li>The producer sends a message to an exchange. The exchange type must be specified when it is created.</li></ol><ol type="1" id="caa24a06-d2e5-4040-83d4-784601829fb4" class="numbered-list" start="2"><li>The exchange receives the message and is responsible for routing the message. The exchange will consider the message properties and exchange type, such as routing key.</li></ol><ol type="1" id="65b7deef-1d41-440f-8016-9c4b34d8475a" class="numbered-list" start="3"><li>Bindings must be established between the exchange and queue in advance. The exchange routes the message to the queue depending on the message properties. In the above example, there are 2 bindings from the exchange to 2 different queues.</li></ol><ol type="1" id="f27e888a-dd4d-4c3d-80b3-c3f03cadc697" class="numbered-list" start="4"><li>Messages remain in the queue until they are processed by consumers.</li></ol><ol type="1" id="03485a70-6edb-45fa-bdda-ae7c2e8acbb8" class="numbered-list" start="5"><li>The consumer processes the message.</li></ol><h2 id="ea5e1f17-659f-4858-8eca-ffec2d817f05" class=""><mark class="highlight-blue">3. Main components of RabbitMQ</mark></h2><p id="d007f390-a940-4149-b2e0-20a1cb8e49c8" class="">In RabbitMQ&#x27;s architecture, the main components include messages, producers, exchanges, bindings, queues, and consumers.</p><h3 id="9fa8e03c-ba2a-482c-95c8-cc3a8b9dac87" class="">3.1. Message</h3><p id="525b3513-f6ba-42dd-9fc3-3542f3c40f32" class=""><strong>Message</strong> is the basic unit for exchanging information in RabbitMQ. It includes a body (also called payload) and optional other properties such as header, routing key, message ID, etc.</p><p id="125c3ab9-7fb8-4751-98d9-b34399c6ae25" class=""><strong>3.1.1. Message Body</strong></p><p id="1c5e1eb2-20e9-441f-9c88-24eca543d8bd" class=""><strong>Message body</strong> contains the actual data to be sent, which can be in various formats such as JSON, XML, binary or any structure. The message body content can represent commands, events, notifications or any information to be exchanged.</p><p id="26bcf434-a71c-4f5c-bdee-16dc1f144cae" class=""><strong>3.1.2. Message Properties</strong></p><p id="1067e593-7999-43d1-bcea-3cf72bdd3c7d" class=""><strong>Message properties</strong> include various attributes and metadata accompanying the message.</p><p id="da4d9f06-c9b4-4bd0-9163-1051940e0c93" class="">Some basic property lists:</p><p id="1c3e5a59-666a-46f0-bd03-5f8e94299212" class="">Routing key: Used by the exchange to determine how to route the message to the queue (depending on the exchange type).</p><p id="c3853006-cfc5-4a2f-92cf-bac3752c5881" class="">Message ID: A unique identifier that identifies the message.</p><p id="62f12112-74c7-449e-b22c-6dffc37b80c7" class="">Timestamp: Time when the message was created.</p><p id="c579ab57-2389-4165-a750-73434fbf4aa9" class="">Headers: Custom headers containing additional information about the message.</p><p id="5687a349-9c55-4a7e-b74e-70f2c263ba67" class="">Delivery Mode: Specifies the delivery mode, whether messages should be stored to disk to maintain durability or not.</p><p id="c78d9cba-0c8d-42c8-8125-95f228c92e04" class="">Expiration: Time when the message is removed if not used.</p><p id="d2522896-c016-4b8e-b42c-726557bd7927" class="">Priority: Message priority level.</p><p id="4a82f500-6162-4726-b55e-d9a803458289" class="">Content type: Describes the format of the message content (e.g. application/json).</p><p id="72cf8def-c1c2-4725-a9f0-0fbef5eef7d2" class="">Content encoding: Specifies the encoding used for the message content (e.g. utf-8).</p><h3 id="44ea6355-6f03-4822-a082-331896882cc1" class="">3.2. Producer</h3><p id="0abcca15-7742-444c-bf20-6e5ad45b0b22" class=""><strong>Producer </strong>is an application that sends messages to RabbitMQ. This is the starting point in RabbitMQ&#x27;s workflow.</p><p id="6a0fd148-7434-4484-9dd1-736de90d1052" class="">Producers typically open one or more TCP connections to exchanges as the application initializes. These connections usually persist as long as their connections or running applications (long-lived connection).</p><h3 id="7dd7bfe4-7281-467f-8f6d-6310ed3c3e8e" class="">3.3. Bindings</h3><p id="48f19b0f-9c98-4ef1-bf9f-1d9d085a4e9f" class=""><strong>Bindings</strong> are relationships established to determine the relationship between exchanges and queues. They specify routing rules to send messages from the exchange to the appropriate queue. A queue can be bound to multiple exchanges and an exchange can have multiple bindings to different queues.</p><h3 id="fc74a063-8e82-486c-a569-7ba428d19232" class="">3.4. Exchanges</h3><p id="0fc47842-efa3-48ce-a60c-7c932a7eb77e" class="">In RabbitMQ, the <strong>exchange</strong> acts as a message router. When a producer sends a message to RabbitMQ, the message will be sent to the exchange. The exchange is then responsible for routing the message to the appropriate queue.</p><p id="c7a35883-cb38-4263-8be1-904e2e925e9e" class="">RabbitMQ has five different exchange types used for routing messages. Each exchange type will have different parameter usage and binding configurations. Clients can create their own exchanges or use default exchanges provided by the server.</p><p id="ce93c0cb-861b-49ae-9ddf-b6e345e7dece" class="">The five basic Exchange types in RabbitMQ are:</p><ol type="1" id="a122d13c-05bb-481a-81ce-2c30d045403b" class="numbered-list" start="1"><li><strong>Direct Exchange</strong>: Routes messages to queues based on the routing key. If the routing key of the message matches the binding key of the queue, the message will be routed to that queue.</li></ol><ol type="1" id="f6342a0a-a2ea-4ef1-a1a8-ff59f3d976f4" class="numbered-list" start="2"><li><strong>Fanout Exchange</strong>: Routes all messages to all queues it knows. Ignores routing key.</li></ol><ol type="1" id="03096105-c05f-4801-b7e6-3e7e63c505d1" class="numbered-list" start="3"><li><strong>Topic Exchange</strong>: Routes messages to queues based on pattern matching between the routing key and binding key.</li></ol><ol type="1" id="87cc33c7-6b67-4329-9ed5-ed4880aeb3d5" class="numbered-list" start="4"><li><strong>Headers Exchange</strong>: Routes messages based on message headers instead of routing key. When binding, you can define conditions for headers.</li></ol><ol type="1" id="bf7968ae-0caf-4968-b2b0-bf0ee43d52b4" class="numbered-list" start="5"><li><strong>Default Exchange</strong>: A special exchange type, every queue that is created is automatically bound to the default exchange with the binding key being the queue name.</li></ol><p id="f9de14e9-46c2-4ce5-9124-2846b073ff78" class="">In addition, there is one more special exchange type:</p><p id="9a2d06a5-78f2-4a50-8f04-798842619096" class=""><strong>Dead Letter Exchange</strong> (DLX): This is a special exchange type used to handle messages that cannot be processed by RabbitMQ. When a message cannot be delivered to any queue or is rejected by a consumer, the message will be sent to the DLX. DLX supports error handling and ensures messages are not lost during processing.</p><h3 id="b5d11ef2-e920-4237-bd72-a6c0dacaeea3" class="">3.5. Queues</h3><p id="f2af73c2-d792-45a4-b9ed-ccb56d0bce76" class=""><strong>Queue</strong> is a list of messages stored until they are consumed by consumers.</p><p id="0a1d1b14-fe51-425c-b18b-2c623092676b" class="">Messages are routed to queues through bindings from exchanges. RabbitMQ allows creating multiple queues with different configurations. Each queue has a name, and optional other properties such as durability, message expiration time and maximum length of messages.</p><h3 id="416c0e73-e8ae-4c20-8a02-fffd94266687" class="">3.6. Consumers</h3><p id="b4a53b32-7045-4177-aa2b-2af2a9ff0491" class=""><strong>Consumer</strong> is an application that receives and processes messages from RabbitMQ. It listens for messages from one or more queues and then processes them.</p><p id="93c61822-0a55-4652-831d-cc81bd2814fe" class="">Consumers can disconnect from RabbitMQ. When RabbitMQ detects a lost connection, message delivery will pause.</p><h2 id="549f4347-e715-4266-ba7e-6b2ea016c89e" class=""><mark class="highlight-blue">4. Applications of RabbitMQ</mark></h2><p id="63bc3fcd-5402-430b-9b5c-092209b211c6" class="">RabbitMQ has many applications in the following situations:</p><ol type="1" id="d66d6dbe-5f83-4aa4-986b-762e427824fe" class="numbered-list" start="1"><li>Build message systems between services in a distributed architecture.</li></ol><ol type="1" id="aa7193bb-e77e-4a89-91df-48803157629f" class="numbered-list" start="2"><li>Handle asynchronous background tasks to increase processing speed of user requests.</li></ol><ol type="1" id="6f02f613-0e1a-4b47-bccb-5f68202a9111" class="numbered-list" start="3"><li>Ensure reliable transmission of information, ensure no data loss during transmission.</li></ol><ol type="1" id="95668a43-06c0-464e-90ac-ef110d60e9f8" class="numbered-list" start="4"><li>Create queueing systems to evenly distribute workloads to processing agents.</li></ol><ol type="1" id="92acf016-b64e-4683-b90d-882ef4124e11" class="numbered-list" start="5"><li>In building push notification systems.</li></ol><h2 id="43cd9b37-3dbf-46d6-95bc-3f455d987def" class=""><mark class="highlight-blue">5. References</mark></h2><ul id="0d13c68c-dc12-475b-a157-09fec87796af" class="bulleted-list"><li style="list-style-type:disc"><a href="https://firstclassthoughts.co.uk/Articles/Design/RefactoringToMicroServicesTheEventQueue.html#problem-when-to-publish-events">Event Queue Design Pattern</a></li></ul><ul id="0164ca3b-db6a-42cb-b32c-dd2dfc226852" class="bulleted-list"><li style="list-style-type:disc"><a href="https://www.javaguides.net/2018/12/how-rabbitmq-works-and-rabbitmq-core-concepts.html">RabbitMQ Core Concepts</a></li></ul><ul id="eca70a7d-1189-4623-8cbd-9512ea4dd6ff" class="bulleted-list"><li style="list-style-type:disc"><a href="https://www.cloudamqp.com/blog/part4-rabbitmq-for-beginners-exchanges-routing-keys-bindings.html">RabbitMQ Exchanges</a></li></ul><h1 id="c304326a-c03f-48d4-990c-64fe1207a11f" class=""><mark class="highlight-red">II. Installation on Docker</mark></h1><figure id="0e9aa554-ca64-40fd-aa33-aea5b7c8683d"><div class="source">https://github.com/markshust/docker-magento</div></figure><h2 id="09bc8e0d-b9cd-4010-a375-f2d3e900fbba" class=""><mark class="highlight-blue">Guide to installing RabbitMQ on Docker for Magento 2</mark></h2><p id="e333896c-26c9-445e-b877-130731465f6f" class="">Steps to install RabbitMQ on Docker for Magento 2:</p><ol type="1" id="11b5ee70-36c5-4af5-b9dc-91ccd796a41c" class="numbered-list" start="1"><li>Create a <code>rabbitmq</code> service and update required variables (<code>env/rabbitmq.env</code>) in docker-compose.yml</li></ol><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="ae973306-6aae-4aec-8e99-c1792a8937bc" class="code"><code class="language-Docker" style="white-space:pre-wrap;word-break:break-all">...
+rabbitmq:
+		image: markoshust/magento-rabbitmq:3.9-0
+		ports:
+		    - &quot;5672:5672&quot;
+				- &quot;15672:15672&quot;
+		volumes:
+		    - rabbitmqdata:/var/lib/rabbitmq
+		env_file: env/rabbitmq.env
+		environment:
+		    - TZ=Asia/Ho_Chi_Minh
+...</code></pre><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="c3b7ca67-062d-4b3a-bfc8-d4d6413e4f0b" class="code"><code class="language-Docker" style="white-space:pre-wrap;word-break:break-all">RABBITMQ_HOST=rabbitmq
+RABBITMQ_PORT=5672
+RABBITMQ_MANAGEMENT_PORT=15672
+RABBITMQ_DEFAULT_USER=magento
+RABBITMQ_DEFAULT_PASS=magento
+RABBITMQ_DEFAULT_VHOST=/
+RABBITMQ_HEALTHCHECK_TIMEOUT=10</code></pre><ol type="1" id="4bef0855-3b1f-4dbb-b4ed-fd47b1869eef" class="numbered-list" start="2"><li>Start docker</li></ol><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="0231cc38-06eb-480e-838b-70d2c800802f" class="code"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">docker-compose up -d</code></pre><figure id="db365bca-9b88-4d76-80f2-06aa03ca18ee" class="image"><a href="RabbitMQ%20Basic%203c003503d1a5473d8d5d10f2dc22d08b/Untitled%201.png"><img style="width:1226px" src="RabbitMQ%20Basic%203c003503d1a5473d8d5d10f2dc22d08b/Untitled%201.png"/></a><figcaption>RabbitMQ management interface</figcaption></figure><p id="9e14467b-5007-492e-9c4d-b72c74ed08bd" class="">Here, <code>15672:15672</code> allows you to access the RabbitMQ management interface via the browser on port <code>15672</code>, and <code>5672:5672</code> is the port that Magento 2 will connect to send and receive messages. Now you can access the RabbitMQ Management Interface via <code>http://localhost:15672</code> or <code>http://domain:15672</code> . Use the username and password same as in <code>rabbitmq.env</code> file (default is <code>guest</code>).</p><p id="99afa9d5-5e37-471a-91dc-06ee050d8fec" class="">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
