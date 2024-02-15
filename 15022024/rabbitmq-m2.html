@@ -1,0 +1,690 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>RabbitMQ in Magento 2</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="513f90a7-bd01-4030-b03d-27510212654a" class="page sans"><header><h1 class="page-title">RabbitMQ in Magento 2</h1><p class="page-description"></p></header><div class="page-body"><h1 id="52582030-5c90-4f23-8169-95ce3d109633" class=""><mark class="highlight-red">I. How to basic configuration RabbitMQ with Magento 2</mark></h1><h2 id="fb84db03-536c-405c-931d-8ddd3f62f56c" class=""><mark class="highlight-blue">1. </mark><mark class="highlight-blue"><strong>Basics of Queue Management in Magento 2</strong></mark></h2><p id="754c1439-2341-48e7-a8e3-60e3893dff17" class="">The Message Queue Framework (MQF) is a system that allows a module to publish messages to queues. It also defines the consumers that will receive the messages asynchronously. The MQF uses RabbitMQ as the messaging broker, which provides a scalable platform for sending and receiving messages. It also includes a mechanism for storing undelivered messages. RabbitMQ is based on the Advanced Message Queuing Protocol (AMQP) 0.9.1 specification.</p><p id="97223613-8f96-4cfe-9b0e-c19b0f1941a6" class="">In a Magento 2 environment, queue management is essential for efficient task processing and handling. This section provides an overview of the basics of queue management in Magento 2, including an understanding of queues, default queue management mechanisms, and their limitations.</p><p id="74f9b868-76c9-47b8-8621-a90fdd4942ff" class="">A basic message queue system can also be set up without using RabbitMQ. In this system, a MySQL adapter stores messages in the database. Three database tables (<code>queue</code>, <code>queue_message</code>, and <code>queue_message_status</code>) manage the message queue workload. Cron jobs ensure the consumers are able to receive messages. This solution is not very scalable. RabbitMQ should be used whenever possible.</p><h2 id="06580cc3-14be-460e-9f02-3b95c275fc2d" class=""><mark class="highlight-blue">2 .Configure Magento 2 to use RabbitMQ</mark></h2><p id="fe745439-3813-4ab7-87d0-1b22ccb06920" class="">Steps to config RabbitMQ for Magento 2:</p><ol type="1" id="7dc4b76d-0425-4fdf-ab45-af693c7a4a2a" class="numbered-list" start="1"><li>In the <code>app/etc/env.php</code> file of the Magento 2 project, add the following configuration:</li></ol><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="c2f8d0c2-2fe5-40b9-bb4c-ce97bfa6a9a3" class="code"><code class="language-PHP" style="white-space:pre-wrap;word-break:break-all">&#x27;queue&#x27; =&gt; [
+		&#x27;consumers_wait_for_messages&#x27; =&gt; 1,
+    &#x27;amqp&#x27; =&gt; [
+        &#x27;host&#x27; =&gt; &#x27;rabbitmq&#x27;, //RABBITMQ_HOST
+        &#x27;port&#x27; =&gt; &#x27;5672&#x27;, //RABBITMQ_PORT
+        &#x27;user&#x27; =&gt; &#x27;magento&#x27;, //RABBITMQ_DEFAULT_USER
+        &#x27;password&#x27; =&gt; &#x27;magento&#x27;, //RABBITMQ_DEFAULT_PASS
+        &#x27;virtualhost&#x27; =&gt; &#x27;/&#x27;,
+        &#x27;ssl&#x27; =&gt; &#x27;false&#x27;
+    ]
+]</code></pre><ol type="1" id="225428bf-b2fd-4d31-aebe-ad3a5dabfdc1" class="numbered-list" start="2"><li>Run the command <code>bin/magento setup:upgrade</code> to apply the changes.</li></ol><p id="6354fe93-dd76-413a-b492-96522fa61243" class="">To check the connection between Magento and RabbitMQ, you can go to the RabbitMQ Management Interface -&gt; Queues. If you see queues created by Magento, then the installation is successful.</p><figure id="398c0426-10c0-4567-9709-826d05fbee38" class="image"><a href="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/Untitled.png"><img style="width:2754px" src="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/Untitled.png"/></a><figcaption>RabbitMQ Management Interface</figcaption></figure><h1 id="a4d33864-f48c-4373-b2ba-b60832af2abb" class=""><mark class="highlight-red">II. Create and configure custom message queues in Magento 2 using RabbitMQ</mark></h1><p id="424c3dc0-84d7-4252-b488-a08ab700c5b0" class=""><strong>Message queue</strong> – A message queue is a form of asynchronous service-to-service communication. which temporarily stores messages, until they are processed and deleted. Each message is processed only once, by a single consumer.</p><p id="4e6da5c8-f204-4370-ab49-b3f110d6fdb9" class=""><strong>Configuring the message queue: </strong>A message queue requires 4 XML files in <code>vendor\module\etc</code> folder</p><ul id="ae684c82-2952-4bbb-80da-c525be599f6e" class="bulleted-list"><li style="list-style-type:disc"><strong>communication.xml</strong>: defines aspects of the message queue system that all communication types have in common.</li></ul><ul id="01cb2b3d-e8e9-47fd-bbe7-fa9387531dfe" class="bulleted-list"><li style="list-style-type:disc"><strong>queue_consumer.xml</strong>: defines the relationship between an existing queue and its consumer.</li></ul><ul id="e4723eaa-a1c4-48e1-bf1d-aa7a187a6aad" class="bulleted-list"><li style="list-style-type:disc"><strong>queue_publisher.xml</strong>:<strong> </strong>defines which connection and exchange to use to publish messages for a specific topic.</li></ul><ul id="2fc0c10c-581a-4417-9460-cdb1d0f330b6" class="bulleted-list"><li style="list-style-type:disc"><strong>queue_topology.xml</strong>: defines the message routing rules and declares queues and exchanges.</li></ul><figure id="ace7a94e-7aaf-455e-b408-2b71770964f0" class="image"><a href="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/communication.xml.png"><img style="width:2718px" src="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/communication.xml.png"/></a><figcaption>communication.xml</figcaption></figure><figure id="3413125f-2f20-4a01-90eb-76014637093a" class="image"><a href="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/queue_consumer.xml.png"><img style="width:3256px" src="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/queue_consumer.xml.png"/></a><figcaption>queue_consumer.xml</figcaption></figure><figure id="142c514c-e53d-40e0-97a2-6b46405eebcd" class="image"><a href="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/queue_publisher.xml.png"><img style="width:3222px" src="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/queue_publisher.xml.png"/></a><figcaption>queue_publisher.xml</figcaption></figure><figure id="ddb67fb6-93c1-455e-a23a-f25863c32ccd" class="image"><a href="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/queue_topology.xml.png"><img style="width:2886px" src="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/queue_topology.xml.png"/></a><figcaption>queue_topology.xml</figcaption></figure><figure id="89260d32-f40c-4224-a9ed-e136dfed468f" class="image"><a href="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/Index.php.png"><img style="width:1944px" src="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/Index.php.png"/></a><figcaption>Publish.php</figcaption></figure><figure id="5f8a67d8-5721-4ece-8e2a-b82c5c88318e" class="image"><a href="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/Consumer.png"><img style="width:2634px" src="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/Consumer.png"/></a><figcaption>Consumer.php</figcaption></figure><figure id="d9588de8-3779-40e0-b201-cbdc77c68d36" class="image"><a href="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/Untitled%201.png"><img style="width:1254px" src="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/Untitled%201.png"/></a><figcaption>When a message queue is successfully created, the expected outcomes are as follows</figcaption></figure><p id="539d89d6-6e2c-454a-a562-e6b871263ca0" class="">In the given example, a queue named <code>rnd.getdata</code> will be created in RabbitMQ. The publisher will send messages to the <code>magento</code> exchange and bind it to a topic named <code>rnd.topic</code>. A consumer is implemented in the file <code>Training\MessageQueue\Model\Queue\Consumer::processMessage</code> with the task of handling the messages received from the queue (in this case, logging the received messages).</p><p id="8ffdd709-9381-4dff-bd41-35da4f4c121a" class="">Consumers are executed by cron, aside from running via cron, consumers can be executed with the following command</p><p id="de0edfbf-35c8-4fc3-a614-368d8ac243d6" class=""><code>php bin/magento queue:consumers:start</code></p><p id="798fdae7-fc1f-48ec-9cee-f07d214ad0ed" class="">Above is just a simple example of configuring and managing message queues in Magento 2 using RabbitMQ. To learn more about configuring a message queue, you can refer to the following documentation:</p><ul id="cd6347b4-ca39-4acc-9e84-59918a48a226" class="bulleted-list"><li style="list-style-type:disc"><a href="https://developer.adobe.com/commerce/php/development/components/message-queues/configuration/#queue_consumerxml">Configure message queues</a></li></ul><ul id="279e59e2-f0c6-480a-a3d9-381945244923" class="bulleted-list"><li style="list-style-type:disc"><a href="https://webkul.com/blog/message-queue-in-magento2/">Example</a></li></ul><h1 id="f08193e4-d37b-4c84-bdb0-05c4ed216e73" class=""><mark class="highlight-red">III. Handling different types of messages in Magento 2 using RabbitMQ</mark></h1><p id="cb3349ba-92c0-4137-8c58-58eac652729d" class="">In the example above, the outgoing message is simply a string array. Depending on the processing requirements of the consumer, the outgoing message can be more complex.</p><p id="f9c0b921-8fab-4296-ad6f-9b955c23afee" class="">At this point, it is necessary to create a separate data structure for the message to meet the consumer&#x27;s requirements. Below is an example of sending stock information for a product when a user saves a product from the back-end (admin).</p><p id="998178ac-4fda-4873-9b72-ef02d8ac949c" class="">Define Message Structure: Start by defining the structure of the messages you want to handle. This includes specifying the attributes, data format, and any additional metadata required for processing the messages effectively</p><figure id="750c03c9-2c79-4892-8097-62480f96ebed" class="image"><a href="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/diff_handler_1.png"><img style="width:432px" src="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/diff_handler_1.png"/></a><figcaption>Custome message structure</figcaption></figure><figure id="b634a2fd-3801-461e-80c8-233e6d9c3949" class="image"><a href="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/diff_handler_6.png"><img style="width:528px" src="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/diff_handler_6.png"/></a><figcaption>Implement message data structure</figcaption></figure><p id="995c90ad-0b6c-4b73-bc0c-f0408c97d7fd" class="">Create Message Producers: Message producers are responsible for sending messages to RabbitMQ queues. In Magento 2, you can create custom modules or extensions to implement message producers. Depending on your use case, you may have different producers for different types of messages. For example, you might have a producer for notification stock of product messages.</p><figure id="4070d154-b37f-4c95-8f9f-e877a32c52ad" class="image"><a href="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/diff_handler_2.png"><img style="width:576px" src="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/diff_handler_2.png"/></a><figcaption>Observer send stock status when save product in Back-end</figcaption></figure><p id="5b8c38e5-7ac3-44e3-a933-4da4ed888393" class="">Implement Message Consumers: Message consumers are responsible for handling messages received from the RabbitMQ queues. In Magento 2, you can create custom consumers by implementing the appropriate interfaces and classes. Each consumer should be designed to process a specific type of message.</p><figure id="9f50772f-76b5-4f0b-85c6-14518497803e" class="image"><a href="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/diff_handler_4.png"><img style="width:672px" src="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/diff_handler_4.png"/></a><figcaption>queue_consumer.xml</figcaption></figure><p id="b900303a-3472-4bd5-bc6a-da61a39a6bd4" class="">Define Message Handlers: Within your message consumers, implement message handlers to process the received messages. Message handlers perform the necessary actions based on the message content. This can include updating the database, triggering events, invoking business logic, or interacting with other Magento components. For this example, handlers will write in log file follow stock status.</p><figure id="5d237b8d-a701-4682-bc37-753b29b0c302" class="image"><a href="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/diff_handler_3.png"><img style="width:2718px" src="RabbitMQ%20in%20Magento%202%20513f90a7bd014030b03d27510212654a/diff_handler_3.png"/></a><figcaption>Process the received messages</figcaption></figure><p id="85dfbcb9-9c6c-404f-b680-7a433372d31a" class="">Result:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="aad7c5a3-ac7b-4e76-b3cb-4f2d1fc460c2" class="code"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">/var/www/html/app/code/Training/MessageQueue/Model/Queue/StockNotifyConsumer.php:33
+Product 62 in stock
+
+/var/www/html/app/code/Training/MessageQueue/Model/Queue/StockNotifyConsumer.php:36
+Product 62 out of stock</code></pre><h1 id="42eb8625-14d1-4505-8773-59e8de121134" class=""><mark class="highlight-red">IV. Advanced Queue Management in Magento 2</mark></h1><p id="0d7cc206-8ece-474c-a9a3-5f42af14c03e" class="">Implementing advanced queue management strategies in Magento 2 involves configuring and customizing the message queue system to leverage the desired features. Here is an overview of how you can implement advanced queue management in Magento 2:</p><ol type="1" id="3ac17f26-8ab9-4007-b73b-daad777fb576" class="numbered-list" start="1"><li>Message Prioritization:<ul id="bc6de9a2-74e2-4032-8cb6-8258de0dea42" class="bulleted-list"><li style="list-style-type:disc">Define a priority attribute for messages: Modify the code that publishes messages to the queue to include a priority attribute. This can be achieved by setting the <code>priority</code> property of the message when using the Magento 2 Queue API.</li></ul><ul id="dcb52772-c405-46b0-81b6-2428818e9376" class="bulleted-list"><li style="list-style-type:disc">Configure consumer workers: Configure the consumer workers to consume messages in priority order. This can be done by adjusting the worker configuration to process higher-priority messages before lower-priority ones.</li></ul></li></ol><ol type="1" id="042ac104-2011-4a07-8261-31998205c9e5" class="numbered-list" start="2"><li>Time-to-Live (TTL):<ul id="ab5ff4f7-d8db-4281-9eab-0e522a8fbf05" class="bulleted-list"><li style="list-style-type:disc">Set message time-to-live: Set the time-to-live (TTL) property for messages when publishing them to the queue. This can be done by setting the <code>timeToLive</code> property of the message using the Magento 2 Queue API.</li></ul><ul id="f5979a76-7ad4-48dc-808c-9e87d282a269" class="bulleted-list"><li style="list-style-type:disc">Configure message expiration: Configure the message queue system to discard expired messages automatically. This can be achieved by configuring the RabbitMQ server to remove messages that exceed their TTL.</li></ul></li></ol><ol type="1" id="bab60ec4-5249-4544-a918-53f6a47ee493" class="numbered-list" start="3"><li>Dead-Letter Queues:<ul id="aaba6770-f00b-4b8e-8a72-970b56310e35" class="bulleted-list"><li style="list-style-type:disc">Configure dead-letter exchange: Set up a dead-letter exchange and configure bindings to route failed messages to the dead-letter queue. This involves configuring the RabbitMQ server and defining the appropriate bindings in the Magento 2 configuration files.</li></ul><ul id="0da2f6b9-9669-414b-ac29-8db1e4683834" class="bulleted-list"><li style="list-style-type:disc">Implement error handling and retry logic: Within your message consumers, implement error handling and retry mechanisms. When a message processing fails, handle the error and determine whether it should be retried or sent to the dead-letter exchange.</li></ul></li></ol><ol type="1" id="81a04c45-4c3f-426e-9c42-202d9173a1fd" class="numbered-list" start="4"><li>Batch Processing:<ul id="ec9bc9c2-69fb-47a8-8f9f-369a6cf00ff6" class="bulleted-list"><li style="list-style-type:disc">Group messages into batches: Modify the code that publishes messages to the queue to group related messages into batches. This can be achieved by aggregating multiple messages into a single message payload or by using a specific batch identifier.</li></ul><ul id="8a5c9190-ee5d-4a26-8fcd-2785a462a770" class="bulleted-list"><li style="list-style-type:disc">Implement batch processing logic: Configure the consumer workers to process messages in batches. Modify the consumer code to handle batched messages and perform batch-specific processing logic.</li></ul></li></ol><ol type="1" id="0a4ed607-54fd-44a9-93db-0a643fe0cd32" class="numbered-list" start="5"><li>Message Deduplication:<ul id="b214e918-f223-4983-8faf-57bc40355be2" class="bulleted-list"><li style="list-style-type:disc">Assign unique message identifiers: Ensure that each message has a unique identifier. This can be achieved by including a UUID or other unique identifier in the message payload.</li></ul><ul id="c93705cb-a0b3-4fe4-9a8e-d0180622c06f" class="bulleted-list"><li style="list-style-type:disc">Implement deduplication logic: Within the message consumers, implement deduplication logic to check for duplicate messages before processing. Maintain a record of processed messages and compare incoming messages against this record to identify duplicates.</li></ul></li></ol><p id="17160e66-1cba-4a75-99ce-d64273b92a72" class="">It&#x27;s important to note that implementing these advanced queue management strategies may require modifications to the Magento 2 codebase and configuration files. Additionally, some strategies, such as dead-letter queues, may require changes to the RabbitMQ server configuration. It&#x27;s recommended to carefully plan and test these modifications to ensure they align with your specific requirements and the overall system architecture.</p><h2 id="5a017633-0ce6-42dc-afc6-1f1ef187d0ee" class=""><mark class="highlight-blue">1. Message Prioritization</mark></h2><p id="02415c15-61d2-405a-868a-92124f340895" class="">The message prioritization in the advanced queue system allows you to control the order in which messages are processed by the message queue consumers. The advanced queue system is used for asynchronous processing of time-consuming tasks in Magento, such as order processing, email sending, and other background processes.</p><p id="c3eaaf6d-3785-4ba8-8fdd-3820f2c5d565" class="">Here&#x27;s how you can work with message prioritization in Magento 2 advanced queues:</p><ol type="1" id="e4f13039-0fc5-4d30-bcbf-085d80a52dcf" class="numbered-list" start="1"><li><strong>Understanding Message Priority:</strong><ul id="2aa33850-1e39-4291-8ad0-d5a09111aaeb" class="bulleted-list"><li style="list-style-type:disc">Message priority determines the order in which messages are processed from the queue. Higher priority messages are processed before lower priority ones.</li></ul><ul id="c6b8c35a-f3e5-40b0-a116-f480e377bebd" class="bulleted-list"><li style="list-style-type:disc">In Magento 2, message priority is typically represented numerically, with 0 being the lowest priority and higher numbers indicating higher priority.</li></ul></li></ol><ol type="1" id="ca5deb58-e7d1-4004-8e16-566ccfe6051c" class="numbered-list" start="2"><li><strong>Setting Message Priority:</strong><ul id="785e7ee1-bb1c-4ff1-8cc1-a5fadfc323d1" class="bulleted-list"><li style="list-style-type:disc">When adding messages to the queue, you can specify the priority level for each message. This can be done programmatically when dispatching messages to the queue.</li></ul><ul id="1d10e4b4-b980-4206-b680-c79a6b0fc611" class="bulleted-list"><li style="list-style-type:disc">In Magento 2, you can use the <code><strong>\Magento\Framework\MessageQueue\PublisherInterface</strong></code> to publish messages to the queue. You can set priority using the <code><strong>setPriority()</strong></code> method.</li></ul></li></ol><ol type="1" id="d7032097-d30e-474e-947a-cbb1979d9b8b" class="numbered-list" start="3"><li><strong>Configuring Queue Consumers:</strong><ul id="a5d1c657-7f11-4542-9b70-d7560fbd57cf" class="bulleted-list"><li style="list-style-type:disc">Queue consumers are responsible for processing messages from the queue. It&#x27;s essential to configure consumers to process messages based on their priority.</li></ul><ul id="a98eb5c5-7a67-4b8a-8b4d-6f1df9769fee" class="bulleted-list"><li style="list-style-type:disc">Consumers should be designed to fetch and process messages in priority order, ensuring that higher priority tasks are processed first.</li></ul></li></ol><ol type="1" id="780f76aa-cc41-4d2f-83cd-ebb2cba9b22e" class="numbered-list" start="4"><li><strong>Processing Order</strong>: <ul id="7b5750c3-6f4c-4647-b659-8afb6ba7c955" class="bulleted-list"><li style="list-style-type:disc">When multiple consumers are active and listening to the same queue, they will try to process messages based on their priority levels. Consumers that are configured to process High priority messages will pick up and process those messages first, followed by Medium and Low priority messages.</li></ul></li></ol><ol type="1" id="129240c8-2e13-4db8-ba47-da4f5f4184ea" class="numbered-list" start="5"><li><strong>Message Ordering</strong>: <ul id="351fa012-4398-49ea-acd3-7e5aeab7ac5b" class="bulleted-list"><li style="list-style-type:disc">Within each priority level, the messages are processed in the order they were added to the queue. This means that if there are multiple messages with the same priority level, the consumer will process them in a first-in, first-out (FIFO) manner.</li></ul></li></ol></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
