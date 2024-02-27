@@ -1,0 +1,6 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/queue.xsd">
+    <!-- you can name topic according to self -->
+    <topic name="rnd.topic" request="string"/>
+    <topic name="stock.notify.topic" request="Training\MessageQueue\Api\Data\Message\MessageInterface"/>
+    <topic name="priority.topic" request="string"/>
+</config>
